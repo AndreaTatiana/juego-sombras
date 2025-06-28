@@ -1,0 +1,611 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="es">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>La Granja de las Sombras</title>\
+    <style>\
+        * \{\
+            margin: 0;\
+            padding: 0;\
+            box-sizing: border-box;\
+            user-select: none;\
+        \}\
+\
+        body \{\
+            font-family: 'Comic Sans MS', cursive;\
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);\
+            min-height: 100vh;\
+            overflow: hidden;\
+        \}\
+\
+        .game-container \{\
+            position: relative;\
+            width: 100vw;\
+            height: 100vh;\
+            background-image: \
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 2px, transparent 2px),\
+                radial-gradient(circle at 80% 60%, rgba(255,255,255,0.2) 1px, transparent 1px);\
+            background-size: 50px 50px, 30px 30px;\
+        \}\
+\
+        .title \{\
+            text-align: center;\
+            font-size: 2.5em;\
+            color: #2E8B57;\
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);\
+            margin: 20px 0;\
+            animation: bounce 2s infinite;\
+        \}\
+\
+        @keyframes bounce \{\
+            0%, 20%, 50%, 80%, 100% \{ transform: translateY(0); \}\
+            40% \{ transform: translateY(-10px); \}\
+            60% \{ transform: translateY(-5px); \}\
+        \}\
+\
+        .instructions \{\
+            text-align: center;\
+            font-size: 1.4em;\
+            color: #FF6347;\
+            margin-bottom: 20px;\
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);\
+        \}\
+\
+        .game-area \{\
+            display: flex;\
+            justify-content: space-between;\
+            padding: 0 50px;\
+            height: calc(100vh - 200px);\
+            align-items: center;\
+        \}\
+\
+        .animals-section \{\
+            flex: 1;\
+            display: flex;\
+            flex-wrap: wrap;\
+            gap: 20px;\
+            justify-content: center;\
+            align-items: center;\
+            max-width: 400px;\
+        \}\
+\
+        .shadows-section \{\
+            flex: 1;\
+            display: grid;\
+            grid-template-columns: repeat(3, 1fr);\
+            gap: 30px;\
+            max-width: 400px;\
+            justify-content: center;\
+        \}\
+\
+        .animal \{\
+            width: 80px;\
+            height: 80px;\
+            cursor: grab;\
+            transition: all 0.3s ease;\
+            border-radius: 50%;\
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);\
+            border: 3px solid #fff;\
+            animation: float 3s ease-in-out infinite;\
+        \}\
+\
+        .animal:hover \{\
+            transform: scale(1.1);\
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);\
+        \}\
+\
+        .animal:active \{\
+            cursor: grabbing;\
+            transform: scale(1.2);\
+        \}\
+\
+        @keyframes float \{\
+            0%, 100% \{ transform: translateY(0px); \}\
+            50% \{ transform: translateY(-10px); \}\
+        \}\
+\
+        .shadow \{\
+            width: 80px;\
+            height: 80px;\
+            border: 3px dashed #666;\
+            transition: all 0.3s ease;\
+            position: relative;\
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));\
+        \}\
+\
+        .shadow.highlight \{\
+            border-color: #FFD700;\
+            animation: pulse 1s infinite;\
+            filter: drop-shadow(2px 2px 8px rgba(255,215,0,0.6));\
+        \}\
+\
+        @keyframes pulse \{\
+            0% \{ transform: scale(1); \}\
+            50% \{ transform: scale(1.1); \}\
+            100% \{ transform: scale(1); \}\
+        \}\
+\
+        .shadow.completed \{\
+            border-color: #32CD32;\
+            filter: drop-shadow(2px 2px 6px rgba(50,205,50,0.4));\
+        \}\
+\
+        /* Siluetas espec\'edficas de cada animal */\
+        .shadow::before \{\
+            content: '';\
+            position: absolute;\
+            top: 50%;\
+            left: 50%;\
+            transform: translate(-50%, -50%);\
+            font-size: 2.5em;\
+            color: rgba(0,0,0,0.4);\
+            filter: blur(1px);\
+        \}\
+\
+        .shadow[data-shadow="vaca"]::before \{ content: '\uc0\u55357 \u56324 '; \}\
+        .shadow[data-shadow="chancho"]::before \{ content: '\uc0\u55357 \u56375 '; \}\
+        .shadow[data-shadow="oveja"]::before \{ content: '\uc0\u55357 \u56337 '; \}\
+        .shadow[data-shadow="gallo"]::before \{ content: '\uc0\u55357 \u56339 '; \}\
+        .shadow[data-shadow="gato"]::before \{ content: '\uc0\u55357 \u56369 '; \}\
+        .shadow[data-shadow="pato"]::before \{ content: '\uc0\u55358 \u56710 '; \}\
+        .shadow[data-shadow="caballo"]::before \{ content: '\uc0\u55357 \u56372 '; \}\
+\
+        .shadow.highlight::before \{\
+            color: rgba(255,215,0,0.6);\
+            filter: blur(0.5px);\
+        \}\
+\
+        .shadow.completed::before \{\
+            display: none;\
+        \}\
+\
+        .controls \{\
+            position: fixed;\
+            top: 20px;\
+            right: 20px;\
+            display: flex;\
+            gap: 10px;\
+        \}\
+\
+        .btn \{\
+            padding: 15px 25px;\
+            font-size: 1.2em;\
+            border: none;\
+            border-radius: 25px;\
+            cursor: pointer;\
+            font-weight: bold;\
+            transition: all 0.3s ease;\
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);\
+            text-transform: uppercase;\
+        \}\
+\
+        .btn-reset \{\
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);\
+            color: white;\
+        \}\
+\
+        .btn-finish \{\
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);\
+            color: white;\
+        \}\
+\
+        .btn:hover \{\
+            transform: translateY(-3px);\
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);\
+        \}\
+\
+        .celebration \{\
+            position: fixed;\
+            top: 50%;\
+            left: 50%;\
+            transform: translate(-50%, -50%);\
+            font-size: 3em;\
+            color: #FFD700;\
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);\
+            z-index: 1000;\
+            opacity: 0;\
+            pointer-events: none;\
+        \}\
+\
+        .celebration.show \{\
+            animation: celebrate 2s ease-in-out;\
+        \}\
+\
+        @keyframes celebrate \{\
+            0% \{ opacity: 0; transform: translate(-50%, -50%) scale(0.5); \}\
+            50% \{ opacity: 1; transform: translate(-50%, -50%) scale(1.2); \}\
+            100% \{ opacity: 0; transform: translate(-50%, -50%) scale(1); \}\
+        \}\
+\
+        .stars \{\
+            position: fixed;\
+            pointer-events: none;\
+            z-index: 999;\
+        \}\
+\
+        .star \{\
+            position: absolute;\
+            color: #FFD700;\
+            font-size: 2em;\
+            animation: starfall 2s ease-out forwards;\
+        \}\
+\
+        @keyframes starfall \{\
+            0% \{\
+                opacity: 1;\
+                transform: translateY(0) rotate(0deg);\
+            \}\
+            100% \{\
+                opacity: 0;\
+                transform: translateY(100px) rotate(360deg);\
+            \}\
+        \}\
+\
+        .completion-message \{\
+            position: fixed;\
+            top: 50%;\
+            left: 50%;\
+            transform: translate(-50%, -50%);\
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);\
+            color: white;\
+            padding: 30px;\
+            border-radius: 20px;\
+            text-align: center;\
+            font-size: 1.5em;\
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);\
+            z-index: 1001;\
+            opacity: 0;\
+            pointer-events: none;\
+        \}\
+\
+        .completion-message.show \{\
+            opacity: 1;\
+            pointer-events: all;\
+            animation: slideIn 0.5s ease-out;\
+        \}\
+\
+        @keyframes slideIn \{\
+            0% \{ transform: translate(-50%, -50%) scale(0.8); \}\
+            100% \{ transform: translate(-50%, -50%) scale(1); \}\
+        \}\
+\
+        .play-again-btn \{\
+            margin-top: 20px;\
+            padding: 10px 20px;\
+            background: #fff;\
+            color: #333;\
+            border: none;\
+            border-radius: 15px;\
+            cursor: pointer;\
+            font-size: 1.1em;\
+            font-weight: bold;\
+        \}\
+\
+        /* Colores espec\'edficos para cada animal */\
+        .vaca \{ background: linear-gradient(45deg, #FFFFFF, #F0F0F0); \}\
+        .chancho \{ background: linear-gradient(45deg, #FFB6C1, #FFA0AC); \}\
+        .oveja \{ background: linear-gradient(45deg, #F5F5DC, #E6E6FA); \}\
+        .gallo \{ background: linear-gradient(45deg, #FF4500, #FFD700); \}\
+        .gato \{ background: linear-gradient(45deg, #D2691E, #F4A460); \}\
+        .pato \{ background: linear-gradient(45deg, #FFFF00, #FFA500); \}\
+        .caballo \{ background: linear-gradient(45deg, #8B4513, #D2691E); \}\
+\
+        /* Iconos de animales usando emojis */\
+        .animal::before \{\
+            content: '';\
+            position: absolute;\
+            top: 50%;\
+            left: 50%;\
+            transform: translate(-50%, -50%);\
+            font-size: 2.5em;\
+        \}\
+\
+        .vaca::before \{ content: '\uc0\u55357 \u56324 '; \}\
+        .chancho::before \{ content: '\uc0\u55357 \u56375 '; \}\
+        .oveja::before \{ content: '\uc0\u55357 \u56337 '; \}\
+        .gallo::before \{ content: '\uc0\u55357 \u56339 '; \}\
+        .gato::before \{ content: '\uc0\u55357 \u56369 '; \}\
+        .pato::before \{ content: '\uc0\u55358 \u56710 '; \}\
+        .caballo::before \{ content: '\uc0\u55357 \u56372 '; \}\
+    </style>\
+</head>\
+<body>\
+    <div class="game-container">\
+        <h1 class="title">\uc0\u55356 \u57150  La Granja de las Sombras \u55356 \u57150 </h1>\
+        <p class="instructions">\'a1Arrastra cada animal hacia su sombra!</p>\
+        \
+        <div class="controls">\
+            <button class="btn btn-reset" onclick="resetGame()">\uc0\u55357 \u56580  Resetear</button>\
+            <button class="btn btn-finish" onclick="finishGame()">\uc0\u55356 \u57281  Finalizar</button>\
+        </div>\
+\
+        <div class="game-area">\
+            <div class="animals-section" id="animalsSection">\
+                <div class="animal vaca" draggable="true" data-animal="vaca"></div>\
+                <div class="animal chancho" draggable="true" data-animal="chancho"></div>\
+                <div class="animal oveja" draggable="true" data-animal="oveja"></div>\
+                <div class="animal gallo" draggable="true" data-animal="gallo"></div>\
+                <div class="animal gato" draggable="true" data-animal="gato"></div>\
+                <div class="animal pato" draggable="true" data-animal="pato"></div>\
+                <div class="animal caballo" draggable="true" data-animal="caballo"></div>\
+            </div>\
+\
+            <div class="shadows-section" id="shadowsSection">\
+                <div class="shadow" data-shadow="vaca"></div>\
+                <div class="shadow" data-shadow="chancho"></div>\
+                <div class="shadow" data-shadow="oveja"></div>\
+                <div class="shadow" data-shadow="gallo"></div>\
+                <div class="shadow" data-shadow="gato"></div>\
+                <div class="shadow" data-shadow="pato"></div>\
+                <div class="shadow" data-shadow="caballo"></div>\
+            </div>\
+        </div>\
+\
+        <div class="celebration" id="celebration"></div>\
+        <div class="stars" id="stars"></div>\
+        \
+        <div class="completion-message" id="completionMessage">\
+            <h2>\'a1Fant\'e1stico! \uc0\u55356 \u57225 </h2>\
+            <p>\'a1Has encontrado todas las sombras!</p>\
+            <button class="play-again-btn" onclick="resetGame()">\'a1Jugar otra vez!</button>\
+        </div>\
+    </div>\
+\
+    <script>\
+        let completedAnimals = 0;\
+        const totalAnimals = 7;\
+        let draggedElement = null;\
+\
+        const animalNames = \{\
+            vaca: '\'a1Esa es la vaca!',\
+            chancho: '\'a1Ese es el chancho!',\
+            oveja: '\'a1Esa es la oveja!',\
+            gallo: '\'a1Ese es el gallo!',\
+            gato: '\'a1Ese es el gato!',\
+            pato: '\'a1Ese es el pato!',\
+            caballo: '\'a1Ese es el caballo!'\
+        \};\
+\
+        const animalSounds = \{\
+            vaca: () => speak('Muuu'),\
+            chancho: () => speak('Oinc oinc'),\
+            oveja: () => speak('Beee'),\
+            gallo: () => speak('Quiquiriqu\'ed'),\
+            gato: () => speak('Miau'),\
+            pato: () => speak('Cuac cuac'),\
+            caballo: () => speak('Iiih')\
+        \};\
+\
+        // Funciones de sonido usando Web Speech API\
+        function speak(text, pitch = 1.2, rate = 0.9) \{\
+            if ('speechSynthesis' in window) \{\
+                const utterance = new SpeechSynthesisUtterance(text);\
+                utterance.pitch = pitch;\
+                utterance.rate = rate;\
+                utterance.volume = 0.8;\
+                utterance.lang = 'es-ES';\
+                speechSynthesis.speak(utterance);\
+            \}\
+        \}\
+\
+        function playSuccessSound() \{\
+            // Simulamos sonido de \'e9xito con Web Audio API\
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();\
+            const oscillator = audioContext.createOscillator();\
+            const gainNode = audioContext.createGain();\
+            \
+            oscillator.connect(gainNode);\
+            gainNode.connect(audioContext.destination);\
+            \
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5\
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5\
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5\
+            \
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);\
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);\
+            \
+            oscillator.start(audioContext.currentTime);\
+            oscillator.stop(audioContext.currentTime + 0.3);\
+        \}\
+\
+        // Event listeners para drag and drop\
+        document.addEventListener('DOMContentLoaded', function() \{\
+            const animals = document.querySelectorAll('.animal');\
+            const shadows = document.querySelectorAll('.shadow');\
+\
+            animals.forEach(animal => \{\
+                animal.addEventListener('dragstart', handleDragStart);\
+                animal.addEventListener('dragend', handleDragEnd);\
+            \});\
+\
+            shadows.forEach(shadow => \{\
+                shadow.addEventListener('dragover', handleDragOver);\
+                shadow.addEventListener('drop', handleDrop);\
+                shadow.addEventListener('dragenter', handleDragEnter);\
+                shadow.addEventListener('dragleave', handleDragLeave);\
+            \});\
+\
+            // Mezclar posiciones de sombras aleatoriamente\
+            shuffleShadows();\
+        \});\
+\
+        function handleDragStart(e) \{\
+            draggedElement = e.target;\
+            e.target.style.opacity = '0.7';\
+        \}\
+\
+        function handleDragEnd(e) \{\
+            e.target.style.opacity = '1';\
+        \}\
+\
+        function handleDragOver(e) \{\
+            e.preventDefault();\
+        \}\
+\
+        function handleDragEnter(e) \{\
+            e.preventDefault();\
+            e.target.classList.add('highlight');\
+        \}\
+\
+        function handleDragLeave(e) \{\
+            e.target.classList.remove('highlight');\
+        \}\
+\
+        function handleDrop(e) \{\
+            e.preventDefault();\
+            e.target.classList.remove('highlight');\
+\
+            if (!draggedElement) return;\
+\
+            const animalType = draggedElement.dataset.animal;\
+            const shadowType = e.target.dataset.shadow;\
+\
+            if (animalType === shadowType && !e.target.classList.contains('completed')) \{\
+                // Coincidencia correcta\
+                e.target.classList.add('completed');\
+                e.target.innerHTML = draggedElement.outerHTML;\
+                draggedElement.style.display = 'none';\
+                \
+                completedAnimals++;\
+                \
+                // Efectos de \'e9xito\
+                showCelebration(animalNames[animalType]);\
+                createStars(e.target);\
+                playSuccessSound();\
+                animalSounds[animalType]();\
+                \
+                setTimeout(() => \{\
+                    speak(animalNames[animalType], 1.3, 1.1);\
+                \}, 500);\
+\
+                // Verificar si se complet\'f3 el juego\
+                if (completedAnimals === totalAnimals) \{\
+                    setTimeout(showCompletionMessage, 1000);\
+                \}\
+            \}\
+        \}\
+\
+        function showCelebration(text) \{\
+            const celebration = document.getElementById('celebration');\
+            celebration.textContent = '\'a1Muy bien! \uc0\u11088 ';\
+            celebration.classList.add('show');\
+            \
+            setTimeout(() => \{\
+                celebration.classList.remove('show');\
+            \}, 2000);\
+        \}\
+\
+        function createStars(element) \{\
+            const rect = element.getBoundingClientRect();\
+            const starsContainer = document.getElementById('stars');\
+            \
+            for (let i = 0; i < 5; i++) \{\
+                const star = document.createElement('div');\
+                star.className = 'star';\
+                star.textContent = '\uc0\u11088 ';\
+                star.style.left = rect.left + rect.width/2 + (Math.random() - 0.5) * 100 + 'px';\
+                star.style.top = rect.top + rect.height/2 + (Math.random() - 0.5) * 100 + 'px';\
+                \
+                starsContainer.appendChild(star);\
+                \
+                setTimeout(() => \{\
+                    star.remove();\
+                \}, 2000);\
+            \}\
+        \}\
+\
+        function showCompletionMessage() \{\
+            const message = document.getElementById('completionMessage');\
+            message.classList.add('show');\
+            speak('\'a1Fant\'e1stico! \'a1Has encontrado todas las sombras!', 1.4, 1.0);\
+            \
+            // Crear m\'e1s estrellas de celebraci\'f3n\
+            for (let i = 0; i < 20; i++) \{\
+                setTimeout(() => createRandomStars(), i * 100);\
+            \}\
+        \}\
+\
+        function createRandomStars() \{\
+            const starsContainer = document.getElementById('stars');\
+            const star = document.createElement('div');\
+            star.className = 'star';\
+            star.textContent = '\uc0\u11088 ';\
+            star.style.left = Math.random() * window.innerWidth + 'px';\
+            star.style.top = Math.random() * window.innerHeight + 'px';\
+            \
+            starsContainer.appendChild(star);\
+            \
+            setTimeout(() => \{\
+                star.remove();\
+            \}, 2000);\
+        \}\
+\
+        function shuffleShadows() \{\
+            const shadowsSection = document.getElementById('shadowsSection');\
+            const shadows = Array.from(shadowsSection.children);\
+            \
+            // Algoritmo Fisher-Yates para mezclar\
+            for (let i = shadows.length - 1; i > 0; i--) \{\
+                const j = Math.floor(Math.random() * (i + 1));\
+                shadowsSection.appendChild(shadows[j]);\
+            \}\
+        \}\
+\
+        function resetGame() \{\
+            // Ocultar mensaje de finalizaci\'f3n\
+            document.getElementById('completionMessage').classList.remove('show');\
+            \
+            // Restaurar animales\
+            const animals = document.querySelectorAll('.animal');\
+            animals.forEach(animal => \{\
+                animal.style.display = 'block';\
+            \});\
+            \
+            // Limpiar sombras\
+            const shadows = document.querySelectorAll('.shadow');\
+            shadows.forEach(shadow => \{\
+                shadow.classList.remove('completed', 'highlight');\
+                shadow.innerHTML = '';\
+            \});\
+            \
+            // Reiniciar contador\
+            completedAnimals = 0;\
+            \
+            // Mezclar sombras nuevamente\
+            shuffleShadows();\
+            \
+            speak('\'a1Vamos a jugar otra vez!', 1.3, 1.1);\
+        \}\
+\
+        function finishGame() \{\
+            if (confirm('\'bfEst\'e1s seguro de que quieres terminar el juego?')) \{\
+                speak('\'a1Gracias por jugar! \'a1Hasta la pr\'f3xima!', 1.2, 1.0);\
+                setTimeout(() => \{\
+                    document.body.innerHTML = `\
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%); font-family: 'Comic Sans MS', cursive;">\
+                            <h1 style="font-size: 3em; color: #2E8B57; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); margin-bottom: 20px;">\'a1Gracias por jugar! \uc0\u55356 \u57119 </h1>\
+                            <p style="font-size: 1.5em; color: #FF6347; margin-bottom: 30px;">\'a1Hasta la pr\'f3xima aventura en la granja!</p>\
+                            <button onclick="location.reload()" style="padding: 15px 30px; font-size: 1.3em; background: linear-gradient(45deg, #4ECDC4, #44A08D); color: white; border: none; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">\uc0\u55357 \u56580  Jugar de nuevo</button>\
+                        </div>\
+                    `;\
+                \}, 2000);\
+            \}\
+        \}\
+\
+        // Dar la bienvenida al usuario\
+        window.addEventListener('load', () => \{\
+            setTimeout(() => \{\
+                speak('\'a1Bienvenido a la granja! Arrastra cada animal hacia su sombra.', 1.2, 1.0);\
+            \}, 1000);\
+        \});\
+    </script>\
+</body>\
+</html>}
